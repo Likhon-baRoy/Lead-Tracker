@@ -4,6 +4,13 @@ const inputEl = document.getElementById("input-el");
 const inputBtn = document.getElementById("input-btn");
 const ulEl = document.getElementById("ul-el");
 
+let leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") );
+
+if (leadsFromLocalStorage) {
+    myLeads = leadsFromLocalStorage;
+    renderLeads();
+}
+
 // save input when clicked on save button
 inputBtn.addEventListener("click", saveInput);
 
@@ -17,6 +24,7 @@ inputEl.addEventListener("keydown", (event) => {
 function saveInput() {
     myLeads.push(inputEl.value);
     inputEl.value = "";
+    localStorage.setItem("myLeads", JSON.stringify(myLeads));
     renderLeads();
 }
 
