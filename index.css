@@ -13,6 +13,14 @@ input {
   border: 1px solid #5f9341;
 }
 
+#input-warning {
+  color: red;
+  display: block;
+  padding: 5px 0;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 button {
   background-color: #5f9341;
   padding: 10px 20px;

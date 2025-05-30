@@ -5,6 +5,7 @@ const inputBtn = document.getElementById("input-btn");
 const tabBtn = document.getElementById("tab-btn");
 const deleteBtn = document.getElementById("delete-btn");
 const ulEl = document.getElementById("ul-el");
+const inputWrn = document.getElementById("input-warning");
 
 const leadsFromLocalStorage = JSON.parse( localStorage.getItem("myLeads") );
 
@@ -13,12 +14,30 @@ if (leadsFromLocalStorage) {
     render(myLeads);
 }
 
+function saveTab(url) {
+    if (myLeads.includes(url)) {
+        inputWrn.innerText = "This URL is already saved";
+        return;
+    } else {
+        myLeads.push(url);
+    }
+
+    localStorage.setItem("myLeads", JSON.stringify(myLeads));
+    render(myLeads);
+}
+
 tabBtn.addEventListener('click', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        myLeads.push(tabs[0].url);
-        localStorage.setItem("myLeads", JSON.stringify(myLeads));
-        render(myLeads);
-    })
+    if (typeof browser !== "undefined" && browser.tabs) {
+        browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+            saveTab(tabs[0].url);
+        })
+    } else if (typeof chrome !== "undefined" && chrome.tabs) {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            saveTab(tabs[0].url);
+        })
+    } else {
+        alert("Tabs API not supported in this browser.");
+    }
 })
 
 deleteBtn.addEventListener("dblclick", () => {
@@ -38,8 +57,21 @@ inputEl.addEventListener("keydown", (event) => {
 });
 
 function saveInput() {
-    myLeads.push(inputEl.value);
+    const inputValue = inputEl.value;
+    if (inputValue === "" || !inputValue.startsWith("http")) {
+        inputWrn.innerText = "Please enter a valid URL";
+        return;
+    } else if (myLeads.includes(inputValue)) {
+        inputWrn.innerText = "This URL is already saved";
+        return;
+    } else {
+        myLeads.push(inputValue);
+    }
+
+    // clear input field
     inputEl.value = "";
+
+    // convert array to string and save to local storage
     localStorage.setItem("myLeads", JSON.stringify(myLeads));
     render(myLeads);
 }
