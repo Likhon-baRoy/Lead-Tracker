@@ -40,6 +40,12 @@ tabBtn.addEventListener('click', () => {
     }
 })
 
+function deleteLead(index) {
+    myLeads.splice(index, 1);
+    localStorage.setItem("myLeads", JSON.stringify(myLeads));
+    render(myLeads);
+};
+
 deleteBtn.addEventListener("dblclick", () => {
     localStorage.clear();
     myLeads = [];
@@ -77,13 +83,24 @@ function saveInput() {
 }
 
 function render(leads) {
-    let listItems = "";
-    for (let i = 0; i < leads.length; i++) {
-        listItems += `
-		<li>
-		    <a href="${leads[i]}" target="_blank">${leads[i]}</a>
-		</li>
-		`
-    }
-    ulEl.innerHTML = listItems;
+    ulEl.innerHTML = ""; // Clear the current list
+
+    leads.forEach((lead, index) => {
+        const li = document.createElement("li");
+
+        const a = document.createElement("a");
+        a.href = lead;
+        a.textContent = lead;
+        a.target = "_blank";
+
+        const btn = document.createElement("button");
+        btn.textContent = "X";
+        btn.addEventListener("click", () => {
+            deleteLead(index);
+        });
+
+        li.appendChild(a);
+        li.appendChild(btn);
+        ulEl.appendChild(li);
+    });
 }

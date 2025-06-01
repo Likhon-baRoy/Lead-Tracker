@@ -29,6 +29,17 @@ button {
   color: white;
 }
 
+li button {
+  border: none;
+  color: red;
+  border-radius: 5px;
+  margin-left: 5px;
+  cursor: pointer;
+  padding: 2px 6px;
+  background-color: #dcdcdc;
+  font-weight: bold;
+}
+
 #delete-btn {
   background-color: white;
   color: #5f9341;
